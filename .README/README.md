@@ -25,6 +25,7 @@ This table maps the rules between `eslint-plugin-jsdoc` and `jscs-jsdoc`.
 | [`require-description`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-description) | N/A |
 | [`require-description-complete-sentence`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-description-complete-sentence) | [`requireDescriptionCompleteSentence`](https://github.com/jscs-dev/jscs-jsdoc#requiredescriptioncompletesentence) |
 | [`require-example`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-example) | N/A |
+| [`require-export-jsdoc`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-export-jsdoc) | N/A |
 | [`require-hyphen-before-param-description`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-hyphen-before-param-description) | [`requireHyphenBeforeDescription`](https://github.com/jscs-dev/jscs-jsdoc#requirehyphenbeforedescription) |
 | [`require-param`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-param) | [`checkParamExistence`](https://github.com/jscs-dev/jscs-jsdoc#checkparamexistence) |
 | [`require-param-description`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-param-description) | [`requireParamDescription`](https://github.com/jscs-dev/jscs-jsdoc#requireparamdescription) |
@@ -86,6 +87,7 @@ Finally, enable all of the rules that you would like to use.
         "jsdoc/require-description": 1,
         "jsdoc/require-description-complete-sentence": 1,
         "jsdoc/require-example": 1,
+        "jsdoc/require-export-jsdoc": 1,
         "jsdoc/require-hyphen-before-param-description": 1,
         "jsdoc/require-param": 1,
         "jsdoc/require-param-description": 1,
@@ -263,6 +265,7 @@ Finally, the following rule pertains to inline disable directives:
 {"gitdown": "include", "file": "./rules/require-description-complete-sentence.md"}
 {"gitdown": "include", "file": "./rules/require-description.md"}
 {"gitdown": "include", "file": "./rules/require-example.md"}
+{"gitdown": "include", "file": "./rules/require-export-jsdoc.md"}
 {"gitdown": "include", "file": "./rules/require-hyphen-before-param-description.md"}
 {"gitdown": "include", "file": "./rules/require-param-description.md"}
 {"gitdown": "include", "file": "./rules/require-param-name.md"}

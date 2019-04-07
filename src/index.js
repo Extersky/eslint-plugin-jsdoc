@@ -11,6 +11,7 @@ import noUndefinedTypes from './rules/noUndefinedTypes';
 import requireDescriptionCompleteSentence from './rules/requireDescriptionCompleteSentence';
 import requireDescription from './rules/requireDescription';
 import requireExample from './rules/requireExample';
+import requireExportJsdoc from './rules/requireExportJsdoc';
 import requireHyphenBeforeParamDescription from './rules/requireHyphenBeforeParamDescription';
 import requireParamName from './rules/requireParamName';
 import requireParam from './rules/requireParam';
@@ -38,6 +39,7 @@ export default {
         'jsdoc/require-description': 'off',
         'jsdoc/require-description-complete-sentence': 'off',
         'jsdoc/require-example': 'off',
+        'jsdoc/require-export-jsdoc': 'off',
         'jsdoc/require-hyphen-before-param-description': 'off',
         'jsdoc/require-param': 'warn',
         'jsdoc/require-param-description': 'warn',
@@ -64,6 +66,7 @@ export default {
     'require-description': requireDescription,
     'require-description-complete-sentence': requireDescriptionCompleteSentence,
     'require-example': requireExample,
+    'require-export-jsdoc': requireExportJsdoc,
     'require-hyphen-before-param-description': requireHyphenBeforeParamDescription,
     'require-param': requireParam,
     'require-param-description': requireParamDescription,

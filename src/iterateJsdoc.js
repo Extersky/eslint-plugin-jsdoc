@@ -151,7 +151,9 @@ export {
   parseComment
 };
 
-export default (iterator) => {
+export default (iterator, opts) => {
+  const opt = opts || {};
+
   return (context) => {
     const sourceCode = context.getSourceCode();
     const tagNamePreference = _.get(context, 'settings.jsdoc.tagNamePreference') || {};
@@ -173,15 +175,15 @@ export default (iterator) => {
     const checkJsdoc = (functionNode) => {
       const jsdocNode = sourceCode.getJSDocComment(functionNode);
 
-      if (!jsdocNode) {
+      if (!jsdocNode && !opt.iterateAll) {
         return;
       }
 
       const ancestors = context.getAncestors();
 
-      const indent = _.repeat(' ', jsdocNode.loc.start.column);
+      const indent = jsdocNode ? _.repeat(' ', jsdocNode.loc.start.column) : null;
 
-      const jsdoc = parseComment(jsdocNode, indent);
+      const jsdoc = jsdocNode ? parseComment(jsdocNode, indent) : null;
 
       const report = (message, fixer = null, jsdocLoc = null) => {
         let loc;
@@ -200,11 +202,18 @@ export default (iterator) => {
             loc.start.column = colNumber;
           }
         }
-        if (fixer === null) {
+        if (fixer === null && jsdocNode) {
           context.report({
             loc,
             message,
             node: jsdocNode
+          });
+        } else if (fixer === null && !jsdocNode) {
+          context.report({
+            fix: fixer,
+            loc,
+            message,
+            node: functionNode
           });
         } else {
           context.report({

@@ -29,6 +29,7 @@ JSDoc linting rules for ESLint.
         * [`require-description-complete-sentence`](#eslint-plugin-jsdoc-rules-require-description-complete-sentence)
         * [`require-description`](#eslint-plugin-jsdoc-rules-require-description)
         * [`require-example`](#eslint-plugin-jsdoc-rules-require-example)
+        * [`require-export-jsdoc`](#eslint-plugin-jsdoc-rules-require-export-jsdoc)
         * [`require-hyphen-before-param-description`](#eslint-plugin-jsdoc-rules-require-hyphen-before-param-description)
         * [`require-param-description`](#eslint-plugin-jsdoc-rules-require-param-description)
         * [`require-param-name`](#eslint-plugin-jsdoc-rules-require-param-name)
@@ -59,6 +60,7 @@ This table maps the rules between `eslint-plugin-jsdoc` and `jscs-jsdoc`.
 | [`require-description`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-description) | N/A |
 | [`require-description-complete-sentence`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-description-complete-sentence) | [`requireDescriptionCompleteSentence`](https://github.com/jscs-dev/jscs-jsdoc#requiredescriptioncompletesentence) |
 | [`require-example`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-example) | N/A |
+| [`require-export-jsdoc`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-export-jsdoc) | N/A |
 | [`require-hyphen-before-param-description`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-hyphen-before-param-description) | [`requireHyphenBeforeDescription`](https://github.com/jscs-dev/jscs-jsdoc#requirehyphenbeforedescription) |
 | [`require-param`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-param) | [`checkParamExistence`](https://github.com/jscs-dev/jscs-jsdoc#checkparamexistence) |
 | [`require-param-description`](https://github.com/gajus/eslint-plugin-jsdoc#eslint-plugin-jsdoc-rules-require-param-description) | [`requireParamDescription`](https://github.com/jscs-dev/jscs-jsdoc#requireparamdescription) |
@@ -122,6 +124,7 @@ Finally, enable all of the rules that you would like to use.
         "jsdoc/require-description": 1,
         "jsdoc/require-description-complete-sentence": 1,
         "jsdoc/require-example": 1,
+        "jsdoc/require-export-jsdoc": 1,
         "jsdoc/require-hyphen-before-param-description": 1,
         "jsdoc/require-param": 1,
         "jsdoc/require-param-description": 1,
@@ -1806,6 +1809,218 @@ function quux () {
 function quux () {
 
 }
+````
+
+
+<a name="eslint-plugin-jsdoc-rules-require-export-jsdoc"></a>
+### <code>require-export-jsdoc</code>
+
+Requires that all exported functions have JSDoc block
+
+|||
+|---|---|
+|Context|`ArrowFunctionExpression`, `FunctionDeclaration`, `FunctionExpression`|
+
+The following patterns are considered problems:
+
+````js
+module.exports = function quux () {
+
+}
+// Message: Missing JSDoc for exported declaration.
+
+module.exports = {
+  method: function() {
+
+  }
+}
+// Message: Missing JSDoc for exported declaration.
+
+module.exports = {
+  test: {
+    test2: function() {
+
+    }
+  }
+}
+// Message: Missing JSDoc for exported declaration.
+
+const test = module.exports = function () {
+
+}
+// Message: Missing JSDoc for exported declaration.
+
+/**
+*
+*/
+const test = module.exports = function () {
+
+}
+
+test.prototype.method = function() {}
+// Message: Missing JSDoc for exported declaration.
+
+const test = function () {
+
+}
+module.exports = {
+  test: test
+}
+// Message: Missing JSDoc for exported declaration.
+
+const test = () => {
+
+}
+module.exports = {
+  test: test
+}
+// Message: Missing JSDoc for exported declaration.
+
+class Test {
+    method() {
+
+    }
+}
+module.exports = Test;
+// Message: Missing JSDoc for exported declaration.
+
+export default function quux () {
+
+}
+// Message: Missing JSDoc for exported declaration.
+
+function quux () {
+
+}
+export default quux;
+// Message: Missing JSDoc for exported declaration.
+````
+
+The following patterns are not considered problems:
+
+````js
+const test = {};
+/**
+ * test
+ */
+test.method = function () {
+
+}
+module.exports = {
+  prop: { prop2: test.method }
+}
+
+/**
+*
+*/
+function test() {
+
+}
+
+module.exports = {
+  prop: { prop2: test }
+}
+
+/**
+ *
+ */
+test = function() {
+
+}
+
+module.exports = {
+  prop: { prop2: test }
+}
+
+/**
+ *
+ */
+const test = () => {
+
+}
+
+module.exports = {
+  prop: { prop2: test }
+}
+
+/**
+ *
+ */
+window.test = function() {
+
+}
+
+module.exports = {
+  prop: window
+}
+
+test = function() {
+
+}
+
+/**
+ *
+ */
+test = function() {
+
+}
+
+module.exports = {
+  prop: { prop2: test }
+}
+
+test = function() {
+
+}
+
+test = 2;
+
+module.exports = {
+  prop: { prop2: test }
+}
+
+/**
+ *
+ */
+function test() {
+
+}
+
+/**
+ *
+ */
+test.prototype.method = function() {
+
+}
+
+module.exports = {
+  prop: { prop2: test }
+}
+
+class Test {
+    /**
+     * Test
+     */
+    method() {
+
+    }
+}
+module.exports = Test;
+
+/**
+ *
+ */
+export default function quux () {
+
+}
+
+/**
+ *
+ */
+function quux () {
+
+}
+export default quux;
 ````
 
 

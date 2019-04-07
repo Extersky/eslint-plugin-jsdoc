@@ -19,6 +19,7 @@ _.forEach([
   'require-description',
   'require-description-complete-sentence',
   'require-example',
+  'require-export-jsdoc',
   'require-hyphen-before-param-description',
   'require-param',
   'require-param-description',
