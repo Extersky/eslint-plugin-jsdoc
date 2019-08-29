@@ -2182,5 +2182,99 @@ export default {
     parserOptions: {
       sourceType: 'module',
     },
+  }, {
+    code: `
+        // Reference statically undeterminable property
+        const obj = {};
+        const val = Math.floor(Math.random() * 10);
+        obj[val] = 1;
+        const func = function() {}
+    `,
+    options: [{
+      publicOnly: true,
+      require: {
+        FunctionExpression: true,
+      },
+    }],
+  }, {
+    code: `
+        // Reference statically undeterminable object property
+        const test = {};
+        const obj = test[Math.random()];
+        const func = function() {}
+    `,
+    options: [{
+      publicOnly: true,
+      require: {
+        FunctionExpression: true,
+      },
+    }],
+  }, {
+    code: `
+        // Reference unknown property
+        const test = {};
+        const obj = test["nonexist"];
+        const func = function() {}
+    `,
+    options: [{
+      publicOnly: true,
+      require: {
+        FunctionExpression: true,
+      },
+    }],
+  }, {
+    code: `
+        // Reference unknown value in object expression
+        const test = {
+          val: GlobalFunc()
+        };
+        const func = function() {}
+    `,
+    options: [{
+      publicOnly: true,
+      require: {
+        FunctionExpression: true,
+      },
+    }],
+  }, {
+    code: `
+        // Test expression types that are not handled
+        "1" | "2"
+        const func = function(){}
+    `,
+    options: [{
+      publicOnly: true,
+      require: {
+        FunctionExpression: true,
+      },
+    }],
+  }, {
+    code: `
+        // Test recursive values
+        var obj = {};
+        const func = function() {}
+        obj["test"] = obj;
+        module.exports = obj;
+    `,
+    options: [{
+      publicOnly: true,
+      require: {
+        FunctionExpression: true,
+      },
+    }],
+  }, {
+    code: `
+        // Test export of expression types that are not handled
+        export let test = "1" | "2"
+    `,
+    options: [{
+      publicOnly: true,
+      require: {
+        FunctionExpression: true,
+      },
+    }],
+    parserOptions: {
+      sourceType: 'module',
+    },
   }],
 };

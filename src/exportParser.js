@@ -9,17 +9,13 @@ const createNode = function () {
 };
 
 const getSymbolValue = function (symbol) {
-  /* istanbul ignore next */
   if (!symbol) {
-    /* istanbul ignore next */
     return null;
   }
-  /* istanbul ignore next */
   if (symbol.type === 'literal') {
     return symbol.value.value;
   }
 
-  /* istanbul ignore next */
   return null;
 };
 
@@ -33,18 +29,9 @@ const getIdentifier = function (node, globals, scope, opts) {
     return identifierLiteral;
   }
 
-  /* istanbul ignore next */
-  const block = scope || globals;
-
   // As scopes are not currently supported, they are not traversed upwards recursively
-  if (block.props[node.name]) {
-    return block.props[node.name];
-  }
-
-  // Seems this will only be entered once scopes added and entered
-  /* istanbul ignore next */
-  if (globals.props[node.name]) {
-    return globals.props[node.name];
+  if (scope.props[node.name]) {
+    return scope.props[node.name];
   }
 
   return null;
@@ -62,7 +49,6 @@ const getSymbol = function (node, globals, scope, opt) {
     const propertySymbol = getSymbol(node.property, globals, scope, {simpleIdentifier: !node.computed});
     const propertyValue = getSymbolValue(propertySymbol);
 
-    /* istanbul ignore next */
     if (obj && propertyValue && obj.props[propertyValue]) {
       block = obj.props[propertyValue];
 
@@ -76,10 +62,8 @@ const getSymbol = function (node, globals, scope, opt) {
       return obj.props[propertyValue];
     }
     */
-    /* istanbul ignore next */
     debug(`MemberExpression: Missing property ${node.property.name}`);
 
-    /* istanbul ignore next */
     return null;
   } case 'ClassDeclaration': case 'ClassExpression': case 'FunctionExpression': case 'FunctionDeclaration': case 'ArrowFunctionExpression': {
     const val = createNode();
@@ -107,7 +91,6 @@ const getSymbol = function (node, globals, scope, opt) {
     val.type = 'object';
     node.properties.forEach((prop) => {
       const propVal = getSymbol(prop.value, globals, scope, opts);
-      /* istanbul ignore next */
       if (propVal) {
         val.props[prop.key.name] = propVal;
       }
@@ -123,7 +106,6 @@ const getSymbol = function (node, globals, scope, opt) {
   }
   }
 
-  /* istanbul ignore next */
   return null;
 };
 
@@ -146,20 +128,17 @@ createSymbol = function (node, globals, value, scope, isGlobal) {
   } case 'Identifier': {
     if (value) {
       const valueSymbol = getSymbol(value, globals, block);
-      /* istanbul ignore next */
       if (valueSymbol) {
         createBlockSymbol(block, node.name, valueSymbol, globals, isGlobal);
 
         return block.props[node.name];
       }
-      /* istanbul ignore next */
       debug('Identifier: Missing value symbol for %s', node.name);
     } else {
       createBlockSymbol(block, node.name, createNode(), globals, isGlobal);
 
       return block.props[node.name];
     }
-    /* istanbul ignore next */
     break;
   } case 'MemberExpression': {
     symbol = getSymbol(node.object, globals, block);
@@ -171,7 +150,6 @@ createSymbol = function (node, globals, value, scope, isGlobal) {
 
       return symbol.props[propertyValue];
     }
-    /* istanbul ignore next */
     debug('MemberExpression: Missing symbol: %s', node.property.name);
     break;
   } case 'FunctionDeclaration': {
@@ -216,10 +194,7 @@ const initVariables = function (node, globals, opts) {
 };
 
 // Populates variable maps using AST
-const mapVariables = function (node, globals, opt, isExport) {
-  /* istanbul ignore next */
-  const opts = opt || {};
-  /* istanbul ignore next */
+const mapVariables = function (node, globals, opts, isExport) {
   switch (node.type) {
   case 'Program': {
     if (opts.ancestorsOnly) {
@@ -246,13 +221,11 @@ const mapVariables = function (node, globals, opt, isExport) {
     });
     break;
   } case 'FunctionDeclaration': {
-    /* istanbul ignore next */
-    if (node.id.type === 'Identifier') {
-      createSymbol(node.id, globals, node, globals, true);
-    }
+    createSymbol(node.id, globals, node, globals, true);
     break;
   } case 'ExportDefaultDeclaration': {
     const symbol = createSymbol(node.declaration, globals, node.declaration);
+    /* istanbul ignore next */
     if (symbol) {
       symbol.exported = true;
     } else if (!node.id) {
@@ -265,10 +238,7 @@ const mapVariables = function (node, globals, opt, isExport) {
         mapVariables(node.declaration, globals, opts, true);
       } else {
         const symbol = createSymbol(node.declaration, globals, node.declaration);
-        /* istanbul ignore next */
-        if (symbol) {
-          symbol.exported = true;
-        }
+        symbol.exported = true;
       }
     }
     node.specifiers.forEach((specifier) => {
@@ -277,16 +247,12 @@ const mapVariables = function (node, globals, opt, isExport) {
     break;
   } case 'ExportSpecifier': {
     const symbol = getSymbol(node.local, globals, globals);
-    /* istanbul ignore next */
-    if (symbol) {
-      symbol.exported = true;
-    }
+    symbol.exported = true;
     break;
   } case 'ClassDeclaration': {
     createSymbol(node.id, globals, node.body, globals);
     break;
   } default: {
-    /* istanbul ignore next */
     return false;
   }
   }
@@ -296,7 +262,6 @@ const mapVariables = function (node, globals, opt, isExport) {
 
 const findNode = function (node, block, cache) {
   let blockCache = cache || [];
-  /* istanbul ignore next */
   if (!block || blockCache.includes(block)) {
     return false;
   }
@@ -329,10 +294,6 @@ const findExportedNode = function (block, node, cache) {
   if (block.ANONYMOUS_DEFAULT === node) {
     return true;
   }
-  /* istanbul ignore next */
-  if (block === null) {
-    return false;
-  }
   const blockCache = cache || [];
   const {props} = block;
   for (const key in props) {
@@ -340,6 +301,7 @@ const findExportedNode = function (block, node, cache) {
     if (Object.prototype.hasOwnProperty.call(props, key)) {
       blockCache.push(props[key]);
       if (props[key].exported) {
+        // Check if this export is the one that is being searched
         if (node === props[key].value || findNode(node, props[key].value)) {
           return true;
         }
@@ -384,15 +346,7 @@ const parseRecursive = function (node, globalVars, opts) {
   return mapVariables(node, globalVars, opts);
 };
 
-const parse = function (ast, node, opt) {
-  /* istanbul ignore next */
-  const opts = opt || {
-    ancestorsOnly: false,
-    esm: true,
-    initModuleExports: true,
-    initWindow: true,
-  };
-
+const parse = function (ast, node, opts) {
   const globalVars = createNode();
   if (opts.initModuleExports) {
     globalVars.props.module = createNode();
